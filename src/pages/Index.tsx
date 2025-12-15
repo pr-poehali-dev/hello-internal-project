@@ -7,13 +7,33 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
 const AUTH_API = 'https://functions.poehali.dev/8eb54989-2fe2-4b89-a4c2-43a30fc47c58';
+const SETUP_WEBHOOK_API = 'https://functions.poehali.dev/ea046f09-368a-4e9d-b86d-21ec84e9b13e';
 const BOT_USERNAME = 'King_zov_loder_bot';
 
 export default function Index() {
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [webhookSetup, setWebhookSetup] = useState(false);
   const { toast } = useToast();
+
+  const setupWebhook = async () => {
+    try {
+      const response = await fetch(SETUP_WEBHOOK_API, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setWebhookSetup(true);
+      }
+    } catch (error) {
+      console.error('Failed to setup webhook:', error);
+    }
+  };
+
+  if (!webhookSetup) {
+    setupWebhook();
+  }
 
   const handlePhoneLogin = async () => {
     if (!phone) {
