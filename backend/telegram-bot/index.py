@@ -67,15 +67,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn = psycopg2.connect(os.environ['DATABASE_URL'])
         cur = conn.cursor()
         
-        cur.execute(
-            "INSERT INTO users (telegram_id, phone_number, first_name, last_name) VALUES (%s, %s, %s, %s) ON CONFLICT (telegram_id) DO UPDATE SET phone_number = EXCLUDED.phone_number, first_name = EXCLUDED.first_name, last_name = EXCLUDED.last_name RETURNING id",
-            (user_id, phone, first_name, last_name)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
+        cur.execute("SELECT id FROM users WHERE telegram_id = %s", (user_id,))
+        existing_user = cur.fetchone()
         
-        send_telegram_message(bot_token, chat_id, '✅ Вы успешно зарегистрированы! Теперь можете войти на сайт.')
+        if existing_user:
+            cur.close()
+            conn.close()
+            send_telegram_message(bot_token, chat_id, '⚠️ Вы уже зарегистрированы в системе!')
+        else:
+            cur.execute(
+                "INSERT INTO users (telegram_id, phone_number, first_name, last_name) VALUES (%s, %s, %s, %s) RETURNING id",
+                (user_id, phone, first_name, last_name)
+            )
+            conn.commit()
+            cur.close()
+            conn.close()
+            send_telegram_message(bot_token, chat_id, '✅ Вы успешно зарегистрированы! Добро пожаловать.')
     
     elif message.get('text') == '/start':
         keyboard = {
