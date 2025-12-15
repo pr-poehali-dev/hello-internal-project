@@ -7,7 +7,7 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 
 const AUTH_API = 'https://functions.poehali.dev/8eb54989-2fe2-4b89-a4c2-43a30fc47c58';
-const BOT_USERNAME = 'your_bot';
+const BOT_USERNAME = 'King_zov_loder_bot';
 
 export default function Index() {
   const [phone, setPhone] = useState('');
