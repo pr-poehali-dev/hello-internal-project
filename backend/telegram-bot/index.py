@@ -71,18 +71,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         existing_user = cur.fetchone()
         
         if existing_user:
+            cur.execute(
+                "SELECT balance, bonus_balance FROM users WHERE telegram_id = %s",
+                (user_id,)
+            )
+            balance_data = cur.fetchone()
             cur.close()
             conn.close()
-            send_telegram_message(bot_token, chat_id, '⚠️ Вы уже зарегистрированы в системе!')
+            balance = float(balance_data[0]) if balance_data and balance_data[0] else 0.0
+            bonus = float(balance_data[1]) if balance_data and balance_data[1] else 0.0
+            send_telegram_message(
+                bot_token, 
+                chat_id, 
+                f'⚠️ Вы уже зарегистрированы в системе!\n\n💰 Баланс: {balance:.2f} ₽\n🎁 Бонусы: {bonus:.2f} ₽'
+            )
         else:
+            username_tg = message.get('from', {}).get('username', '')
             cur.execute(
-                "INSERT INTO users (telegram_id, phone_number, first_name, last_name) VALUES (%s, %s, %s, %s) RETURNING id",
-                (user_id, phone, first_name, last_name)
+                "INSERT INTO users (telegram_id, phone_number, first_name, last_name, username) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                (user_id, phone, first_name, last_name, username_tg)
             )
             conn.commit()
             cur.close()
             conn.close()
-            send_telegram_message(bot_token, chat_id, '✅ Вы успешно зарегистрированы! Добро пожаловать.')
+            send_telegram_message(bot_token, chat_id, '✅ Вы успешно зарегистрированы! Добро пожаловать в систему.\n\nТеперь вы можете войти на сайт.')
     
     elif message.get('text') == '/start':
         keyboard = {

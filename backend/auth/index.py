@@ -44,7 +44,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         cur.execute(
-            "SELECT id, telegram_id, phone_number, first_name, last_name FROM users WHERE phone_number = %s",
+            "SELECT id, telegram_id, phone_number, first_name, last_name, username, balance, bonus_balance FROM users WHERE phone_number = %s",
             (phone,)
         )
         user = cur.fetchone()
@@ -62,7 +62,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'telegram_id': user[1],
                         'phone': user[2],
                         'first_name': user[3],
-                        'last_name': user[4]
+                        'last_name': user[4],
+                        'username': user[5],
+                        'balance': float(user[6]) if user[6] else 0.0,
+                        'bonus_balance': float(user[7]) if user[7] else 0.0
                     }
                 }),
                 'isBase64Encoded': False
@@ -91,7 +94,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         cur.execute(
-            "SELECT id, telegram_id, phone_number, first_name, last_name FROM users WHERE telegram_id = %s",
+            "SELECT id, telegram_id, phone_number, first_name, last_name, username, balance, bonus_balance FROM users WHERE telegram_id = %s",
             (telegram_id,)
         )
         user = cur.fetchone()
@@ -109,7 +112,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'telegram_id': user[1],
                         'phone': user[2],
                         'first_name': user[3],
-                        'last_name': user[4]
+                        'last_name': user[4],
+                        'username': user[5],
+                        'balance': float(user[6]) if user[6] else 0.0,
+                        'bonus_balance': float(user[7]) if user[7] else 0.0
                     }
                 }),
                 'isBase64Encoded': False

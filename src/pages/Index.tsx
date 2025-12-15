@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import Dashboard from './Dashboard';
 
 const AUTH_API = 'https://functions.poehali.dev/8eb54989-2fe2-4b89-a4c2-43a30fc47c58';
 const SETUP_WEBHOOK_API = 'https://functions.poehali.dev/ea046f09-368a-4e9d-b86d-21ec84e9b13e';
@@ -46,73 +47,38 @@ export default function Index() {
   };
 
   if (user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-lg animate-fade-in">
-          <CardHeader className="text-center space-y-2">
-            <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-              <Icon name="UserCheck" size={32} className="text-primary" />
-            </div>
-            <CardTitle className="text-2xl">Вы вошли в систему</CardTitle>
-            <CardDescription>Добро пожаловать!</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3 p-4 bg-muted rounded-lg">
-              <div className="flex items-center gap-3">
-                <Icon name="User" size={18} className="text-muted-foreground" />
-                <div>
-                  <p className="text-sm font-medium">
-                    {user.first_name} {user.last_name}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <Icon name="Phone" size={18} className="text-muted-foreground" />
-                <p className="text-sm">{user.phone}</p>
-              </div>
-            </div>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="w-full"
-            >
-              Выйти
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    return <Dashboard user={user} onLogout={handleLogout} />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-lg animate-fade-in">
+    <div className="min-h-screen bg-gradient-to-br from-red-100 via-rose-100 to-amber-100 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md shadow-2xl animate-fade-in border-red-200 bg-white/90 backdrop-blur-sm">
         <CardHeader className="text-center space-y-2">
-          <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-2">
-            <Icon name="UserPlus" size={32} className="text-primary" />
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-red-500 to-rose-600 rounded-full flex items-center justify-center mb-3 shadow-lg">
+            <Icon name="UserPlus" size={36} className="text-white" />
           </div>
-          <CardTitle className="text-2xl">Регистрация</CardTitle>
-          <CardDescription>Зарегистрируйтесь через Telegram бота</CardDescription>
+          <CardTitle className="text-3xl text-red-900 font-bold">Регистрация</CardTitle>
+          <CardDescription className="text-red-600">Зарегистрируйтесь через Telegram бота</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
             <Button
               onClick={handleTelegramRegister}
-              className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white"
+              className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white shadow-lg h-12"
               size="lg"
             >
-              <Icon name="MessageCircle" size={20} className="mr-2" />
+              <Icon name="MessageCircle" size={22} className="mr-2" />
               Открыть Telegram бота
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-sm text-red-700 text-center leading-relaxed">
               Нажмите кнопку выше, чтобы открыть бота.<br />
               Отправьте боту свой контакт для регистрации.
             </p>
           </div>
-          <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+          <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4 space-y-2">
             <div className="flex items-start gap-2">
-              <Icon name="Info" size={16} className="text-primary mt-0.5" />
-              <p className="text-xs text-muted-foreground">
+              <Icon name="Sparkles" size={18} className="text-amber-600 mt-0.5" />
+              <p className="text-xs text-amber-900 leading-relaxed">
                 После отправки контакта вы автоматически будете зарегистрированы в системе
               </p>
             </div>
